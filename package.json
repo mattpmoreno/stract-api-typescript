@@ -16,7 +16,7 @@
     "build": "tsc"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.15.0",
