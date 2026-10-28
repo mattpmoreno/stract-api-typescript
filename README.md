@@ -20,15 +20,38 @@ Requires Node.js 20 or later.
 
 Requests are authenticated with an API key, sent as a bearer token. To create one, sign in to the Stract app and go to **Account → API Keys**. Additional keys require a Team or Enterprise subscription.
 
-```ts
-import { Configuration, DefaultApi } from 'stract-api';
+Create one `Configuration` with your API key:
 
-const stract = new DefaultApi(
-  new Configuration({ accessToken: process.env.STRACT_API_KEY }),
-);
+```ts
+import { Configuration } from 'stract-api';
+
+const config = new Configuration({ accessToken: process.env.STRACT_API_KEY });
 ```
 
 Keep your API key out of source control. Load it from an environment variable or a secrets manager.
+
+## API groups
+
+Endpoints are grouped by area, and each group is its own class. Create an instance for each group you use, passing the same `config` to each:
+
+```ts
+import { StructsApi, JobsApi, DocumentsApi } from 'stract-api';
+
+const structs = new StructsApi(config);
+const jobs = new JobsApi(config);
+const documents = new DocumentsApi(config);
+```
+
+| Class | Covers |
+|---|---|
+| `StructsApi` | Structs and their fields |
+| `JobsApi` | Synchronous and batch jobs, job status and output |
+| `DocumentsApi` | Uploading documents and retrieving their text or links |
+| `CatalogsApi` | Catalogs and their documents |
+| `ModelsApi` | Available LLM models |
+| `AccountApi` | Your user, account, API keys and credits |
+
+The examples below use these instances.
 
 ## Quick start
 
@@ -37,7 +60,7 @@ Keep your API key out of source control. Load it from an environment variable or
 A struct describes the data you want extracted.
 
 ```ts
-const struct = await stract.structPost({
+const struct = await structs.structPost({
   createStructRequest: { name: 'Restaurant orders' },
 });
 ```
@@ -49,7 +72,7 @@ Each field has a name, a description that guides the extraction, and a type.
 ```ts
 import { FieldType } from 'stract-api';
 
-await stract.structStructIdFieldPost({
+await structs.structStructIdFieldPost({
   structId: struct.id,
   createFieldRequest: [
     {
@@ -74,7 +97,7 @@ Field types: `string`, `boolean`, `number`, `date`, `datetime`, `enum`, `choose_
 For synchronous jobs, always call the `Raw` variant of the method and check the status before reading the result. See [Why use `Raw` for synchronous jobs](#why-use-raw-for-synchronous-jobs).
 
 ```ts
-const res = await stract.structStructIdJobSyncTextPostRaw({
+const res = await jobs.structStructIdJobSyncTextPostRaw({
   structId: struct.id,
   structStructIdJobSyncTextPostRequest: {
     name: 'order-1042',
@@ -99,7 +122,7 @@ if (res.raw.status === 202) {
 ```ts
 import { readFile } from 'node:fs/promises';
 
-const res = await stract.structStructIdJobSyncPostRaw({
+const res = await jobs.structStructIdJobSyncPostRaw({
   structId: struct.id,
   file: new File([await readFile('invoice.pdf')], 'invoice.pdf'),
   additionalInstructions: 'Focus on extracting financial figures only',
@@ -142,12 +165,12 @@ For larger documents, or many documents at once, upload first and run an asynchr
 
 ```ts
 // Upload a document
-const doc = await stract.documentPost({
+const doc = await documents.documentPost({
   file: new File([await readFile('contract.pdf')], 'contract.pdf'),
 });
 
 // Start a job across one or more documents
-const job = await stract.structStructIdJobPost({
+const job = await jobs.structStructIdJobPost({
   structId: struct.id,
   createJobRequest: {
     additionalInstructions: '',
@@ -159,12 +182,12 @@ const job = await stract.structStructIdJobPost({
 let current = job;
 while (!current.isComplete) {
   await new Promise((r) => setTimeout(r, 5000));
-  current = await stract.jobJobIdGet({ jobId: job.id });
+  current = await jobs.jobJobIdGet({ jobId: job.id });
 }
 
 // Fetch the results
 if (current.status === 'complete') {
-  const records = await stract.jobJobIdOutputJsonGet({ jobId: job.id });
+  const records = await jobs.jobJobIdOutputJsonGet({ jobId: job.id });
 }
 ```
 
@@ -172,7 +195,7 @@ A job can also run against every document in a catalog: pass `catalogId` instead
 
 ## Choosing a model
 
-List the available LLM models with `llmModelGet()`, then pass a model's ID as `llmModelId` on any job request. If you omit it, the job uses the default model.
+List the available LLM models with `new ModelsApi(config).llmModelGet()`, then pass a model's ID as `llmModelId` on any job request. If you omit it, the job uses the default model.
 
 ## Error handling
 
@@ -182,7 +205,7 @@ Non-2xx responses throw a `ResponseError`. The underlying `Response` is availabl
 import { ResponseError } from 'stract-api';
 
 try {
-  const res = await stract.structStructIdJobSyncTextPostRaw({ /* ... */ });
+  const res = await jobs.structStructIdJobSyncTextPostRaw({ /* ... */ });
 } catch (err) {
   if (err instanceof ResponseError) {
     console.error(err.response.status, await err.response.json());
@@ -202,7 +225,14 @@ Common statuses:
 
 ## Credits
 
-Processing documents uses credits. Check your balance with `currentCreditsGet()` (or `currentOrgCreditsGet()` for your organization), and see the history with `accountCreditLedgerGet()`.
+Processing documents uses credits. Use `AccountApi` to check your balance with `currentCreditsGet()` (or `currentOrgCreditsGet()` for your organization), and to see the history with `accountCreditLedgerGet()`.
+
+```ts
+import { AccountApi } from 'stract-api';
+
+const account = new AccountApi(config);
+const credits = await account.currentCreditsGet();
+```
 
 ## Development
 
@@ -214,7 +244,10 @@ Requirements: Node.js 20+ and Java 11+.
 npm install
 npm run generate   # regenerate src/ from the live spec
 npm run build      # compile to dist/
+npm run test:smoke # run the built SDK against the live API
 ```
+
+The smoke test reads `STRACT_API_KEY` from a `.env` file in the repo root. Set `STRACT_SMOKE_E2E=1` in `.env` to also run an extraction job, which uses credits and creates (then archives) a temporary struct.
 
 ## Support
 
