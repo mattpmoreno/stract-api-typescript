@@ -260,3 +260,7 @@ The smoke test reads `STRACT_API_KEY` from a `.env` file in the repo root.
 ## Support
 
 Questions, or need a file type that isn't supported? Contact [matt@stract-api.com](mailto:matt@stract-api.com).
+
+## License
+
+[MIT](LICENSE)
