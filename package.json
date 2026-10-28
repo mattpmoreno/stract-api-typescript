@@ -12,7 +12,9 @@
     "dist"
   ],
   "scripts": {
-    "generate": "openapi-generator-cli generate --generator-key stract",
+    "pregenerate": "node -e \"for (const d of ['apis', 'models', 'docs']) require('fs').rmSync('src/' + d, { recursive: true, force: true })\"",
+    "generate":"openapi-generator-cli generate --generator-key stract",
+    "prebuild": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "tsc",
     "test:smoke": "node --env-file=.env --test test/smoke.test.cjs"
   },
