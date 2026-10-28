@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(git push *)",
+      "Bash(git * main)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Bash(java:*)",
+      "PowerShell(java:*)"
+    ],
+    "disableAutoMode": "disable"
+  }
+}
