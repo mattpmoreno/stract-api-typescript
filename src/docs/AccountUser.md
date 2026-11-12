@@ -6,7 +6,7 @@
 
 Name | Type
 ------------ | -------------
-`id` | string
+`id` | number
 `accountId` | string
 `suserId` | string
 `accountUserRole` | [AccountUserRole](AccountUserRole.md)
