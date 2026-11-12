@@ -252,10 +252,10 @@ Requirements: Node.js 20+ and Java 11+.
 npm install
 npm run generate   # regenerate src/ from the live spec
 npm run build      # compile to dist/
-npm run test:smoke # run the built SDK against the live API
+npm run test:sdk   # run the built SDK against the live API
 ```
 
-The smoke test reads `STRACT_API_KEY` from a `.env` file in the repo root.
+The tests read `STRACT_API_KEY` and `STRACT_API_BASE_URL` from a `.env` file in the repo root. They create and clean up their own data, and spend a small amount of credits.
 
 ## Support
 
