@@ -11,6 +11,7 @@ Name | Type
 `additionalInstructions` | string
 `outputType` | string
 `llmModelId` | string
+`llmModelBucket` | string
 
 ## Example
 
@@ -24,6 +25,7 @@ const example = {
   "additionalInstructions": Focus on extracting financial figures only,
   "outputType": null,
   "llmModelId": google.gemma-3-27b-it,
+  "llmModelBucket": m,
 } satisfies SyncTextJobRequest
 
 console.log(example)

@@ -89,7 +89,7 @@ example().catch(console.error);
 
 Get the current user
 
-Retrieve the profile of the currently authenticated user
+Retrieve the profile of the currently  authenticated user
 
 ### Example
 

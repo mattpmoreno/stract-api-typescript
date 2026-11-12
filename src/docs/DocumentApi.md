@@ -23,7 +23,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Delete a document
 
-Deletes the specified document
+Deletes the specified document and its stored file. The document is also removed from any jobs it was part of, along with its associated processing details.
 
 ### Example
 

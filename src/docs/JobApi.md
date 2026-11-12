@@ -597,7 +597,7 @@ This endpoint does not need any parameter.
 
 ## uploadDocumentProcessAndRunJob
 
-> Array&lt;JobOutputRecord&gt; uploadDocumentProcessAndRunJob(structId, file, additionalInstructions, outputType, llmModelId)
+> Array&lt;JobOutputRecord&gt; uploadDocumentProcessAndRunJob(structId, file, additionalInstructions, outputType, llmModelId, llmModelBucket)
 
 Upload a document, run an analysis job on that document, and download the output. For API use.
 
@@ -629,8 +629,10 @@ async function example() {
     additionalInstructions: additionalInstructions_example,
     // string | Format of the output file returned in the response
     outputType: outputType_example,
-    // string | ID of the LLM model to use for this job. Optional; if omitted, or not a recognized model ID, no specific model is set on the job. (optional)
+    // string | ID of the LLM model to use for this job. Optional; if omitted, or not a recognized model ID, no specific model is set on the job. Ignored if a recognized llm_model_bucket is provided. (optional)
     llmModelId: llmModelId_example,
+    // string | Select the \\\"cost-optimal\\\" model at this cost tier (\\\"l\\\" = low, \\\"m\\\" = medium, \\\"h\\\" = high) Optional; takes precedence over llm_model_id. If not one of these values, it is ignored and llm_model_id is used instead. (optional)
+    llmModelBucket: llmModelBucket_example,
   } satisfies UploadDocumentProcessAndRunJobRequest;
 
   try {
@@ -654,7 +656,8 @@ example().catch(console.error);
 | **file** | `Blob` | The file to upload. Supported extensions: .png, .jpg, .jpeg, .webp, .heic, .heif, .tif, .tiff, .avif, .bmp, .pdf, .txt, .csv, .json, .xml, .html, .log, .md, .yaml, .yml, .ini, .conf, .cfg, .sql, .svg, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .eml, .msg, .rtf. If you require any other file types supported please contact us at matt@stract-api.com with the request. | [Defaults to `undefined`] |
 | **additionalInstructions** | `string` | Additional instructions to guide the data extraction, can be empty string | [Defaults to `undefined`] |
 | **outputType** | `json`, `csv` | Format of the output file returned in the response | [Defaults to `undefined`] [Enum: json, csv] |
-| **llmModelId** | `string` | ID of the LLM model to use for this job. Optional; if omitted, or not a recognized model ID, no specific model is set on the job. | [Optional] [Defaults to `undefined`] |
+| **llmModelId** | `string` | ID of the LLM model to use for this job. Optional; if omitted, or not a recognized model ID, no specific model is set on the job. Ignored if a recognized llm_model_bucket is provided. | [Optional] [Defaults to `undefined`] |
+| **llmModelBucket** | `l`, `m`, `h` | Select the \\\&quot;cost-optimal\\\&quot; model at this cost tier (\\\&quot;l\\\&quot; &#x3D; low, \\\&quot;m\\\&quot; &#x3D; medium, \\\&quot;h\\\&quot; &#x3D; high) Optional; takes precedence over llm_model_id. If not one of these values, it is ignored and llm_model_id is used instead. | [Optional] [Defaults to `undefined`] [Enum: l, m, h] |
 
 ### Return type
 

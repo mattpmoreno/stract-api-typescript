@@ -10,6 +10,7 @@ Name | Type
 `catalogId` | string
 `documentIds` | Array&lt;string&gt;
 `llmModelId` | string
+`llmModelBucket` | string
 
 ## Example
 
@@ -22,6 +23,7 @@ const example = {
   "catalogId": null,
   "documentIds": null,
   "llmModelId": google.gemma-3-27b-it,
+  "llmModelBucket": m,
 } satisfies CreateJobRequest
 
 console.log(example)
