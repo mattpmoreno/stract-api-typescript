@@ -266,29 +266,31 @@ The tests also read `STRACT_API_KEY` from the same file. They create and clean u
 
 Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/stract-api).
 
-1. **Regenerate and build.**
+1. **Create a branch** for the release.
+2. **Regenerate and build.**
    ```bash
    npm run generate
    npm run build
    ```
-2. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
-3. **Commit.** Commit the regenerated `src/` and any other changes. `npm version` refuses to run on a dirty working tree.
+3. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
 4. **Bump the version.**
    ```bash
-   npm version patch   # or minor / major
+   npm version patch --no-git-tag-version   # or minor / major
    ```
-   This updates `package.json` and `package-lock.json`, commits, and tags `vX.Y.Z`. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods. You can also edit `version` by hand, but then update both copies in `package-lock.json` too.
-5. **Check the package contents (optional).** `npm publish --dry-run` lists what would be published. It should contain `dist/` including `dist/LICENSE`.
-6. **Publish.**
+   This updates `package.json` and `package-lock.json` without creating a commit or tag. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods.
+5. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
+6. **Publish from `main`.** Check out the updated `main`, then:
    ```bash
    npm login           # first time, or if your session has expired
    npm publish
    ```
    `prepublishOnly` rebuilds `dist/` first, and the build copies `LICENSE` into it. Enter a one-time code if your npm account requires one.
-7. **Push the commit and tag.**
+7. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
    ```bash
-   git push --follow-tags
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
    ```
+   npm doesn't use the tag. It records which commit each release was built from.
 
 ## Support
 
