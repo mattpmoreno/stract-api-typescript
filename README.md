@@ -14,7 +14,7 @@ Define a **struct**, give it **fields**, and run a **job** against text or docum
 npm install stract-api
 ```
 
-Requires Node.js 20 or later.
+Requires Node.js 20.12 or later.
 
 ## Authentication
 
@@ -246,16 +246,51 @@ const ledger = await new AccountCreditLedgerApi(config).getAccountCreditLedgerFo
 
 This SDK is generated from the OpenAPI spec with [OpenAPI Generator](https://openapi-generator.tech) (`typescript-fetch`). Code in `src/` is generated. Don't edit it by hand, because the next generation will overwrite it.
 
-Requirements: Node.js 20+ and Java 11+.
+Requirements: Node.js 20.12+ and Java 11+.
 
 ```bash
 npm install
 npm run generate   # regenerate src/ from the live spec
 npm run build      # compile to dist/
-npm run test:smoke # run the built SDK against the live API
+npm run test:sdk   # run the built SDK against the live API
 ```
 
-The smoke test reads `STRACT_API_KEY` from a `.env` file in the repo root.
+`STRACT_API_BASE_URL` in the `.env` file in the repo root selects which deployment to use (e.g. staging):
+
+- `npm run generate` fetches the spec from `<STRACT_API_BASE_URL>/spec/openapi.yaml`, and falls back to `https://api.stract-api.com` if it isn't set.
+- The tests send requests to `STRACT_API_BASE_URL` instead of the SDK's built-in host.
+
+The tests also read `STRACT_API_KEY` from the same file. They create and clean up their own data, and spend a small amount of credits.
+
+## Publishing
+
+Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/stract-api).
+
+1. **Create a branch** for the release.
+2. **Regenerate and build.**
+   ```bash
+   npm run generate
+   npm run build
+   ```
+3. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
+4. **Bump the version.**
+   ```bash
+   npm version patch --no-git-tag-version   # or minor / major
+   ```
+   This updates `package.json` and `package-lock.json` without creating a commit or tag. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods.
+5. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
+6. **Publish from `main`.** Check out the updated `main`, then:
+   ```bash
+   npm login           # first time, or if your session has expired
+   npm publish
+   ```
+   `prepublishOnly` rebuilds `dist/` first, and the build copies `LICENSE` into it. Enter a one-time code if your npm account requires one.
+7. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
+   ```bash
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+   npm doesn't use the tag. It records which commit each release was built from.
 
 ## Support
 
