@@ -169,7 +169,7 @@ example().catch(console.error);
 
 Get a link to a document
 
-Retrieve a link to download the specified document
+Retrieve a link to download the specified document. Only applies to documents with an uploaded file; text-only documents have no file and return a 404.
 
 ### Example
 
@@ -232,6 +232,7 @@ example().catch(console.error);
 | **200** | Document link |  -  |
 | **400** | Document ID is not UUID |  -  |
 | **401** | Not permitted to access this document |  -  |
+| **404** | Document has no uploaded file (e.g. a text-only document) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 

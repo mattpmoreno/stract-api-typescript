@@ -275,7 +275,7 @@ Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/st
 3. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
 4. **Bump the version.**
    ```bash
-   npm version patch --no-git-tag-version   # or minor / major
+   npm version patch --no-git-tag-version
    ```
    This updates `package.json` and `package-lock.json` without creating a commit or tag. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods.
 5. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
