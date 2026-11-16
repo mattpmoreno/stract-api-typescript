@@ -363,18 +363,27 @@ test('sync text job (Raw) returns records or a job ID', live, async (t) => {
     syncTextJobRequest: syncTextRequest(),
   });
 
-  assert.ok([200, 202].includes(res.raw.status));
-  // Both statuses carry the job ID header, per the README.
-  assert.ok(res.raw.headers.get('stract-job-id'));
+  const jobId = res.raw.headers.get('stract-job-id');
+  try {
+    assert.ok([200, 202].includes(res.raw.status));
+    // Both statuses carry the job ID header, per the README.
+    assert.ok(jobId);
 
-  if (res.raw.status === 202) {
-    return t.skip('Job took longer than the sync wait time; returned 202');
+    if (res.raw.status === 202) {
+      return t.skip('Job took longer than the sync wait time; returned 202');
+    }
+
+    const records = await res.value();
+    assert.equal(records.length, 1);
+    assert.equal(records[0].documentName, 'order-1042');
+    assert.ok('hamburgers' in records[0]);
+  } finally {
+    if (jobId) {
+      const docs = await documents.getDocumentsForJob({ jobId }).catch(() => []);
+      await jobs.archiveJob({ jobId }).catch(() => {});
+      for (const d of docs) await documents.deleteDocument({ documentId: d.id }).catch(() => {});
+    }
   }
-
-  const records = await res.value();
-  assert.equal(records.length, 1);
-  assert.equal(records[0].documentName, 'order-1042');
-  assert.ok('hamburgers' in records[0]);
 });
 
 test('sync file job (Raw) returns records or a job ID', live, async (t) => {
@@ -385,16 +394,25 @@ test('sync file job (Raw) returns records or a job ID', live, async (t) => {
     outputType: 'json',
   });
 
-  assert.ok([200, 202].includes(res.raw.status));
-  assert.ok(res.raw.headers.get('stract-job-id'));
+  const jobId = res.raw.headers.get('stract-job-id');
+  try {
+    assert.ok([200, 202].includes(res.raw.status));
+    assert.ok(jobId);
 
-  if (res.raw.status === 202) {
-    return t.skip('Job took longer than the sync wait time; returned 202');
+    if (res.raw.status === 202) {
+      return t.skip('Job took longer than the sync wait time; returned 202');
+    }
+
+    const records = await res.value();
+    assert.equal(records.length, 1);
+    assert.ok('hamburgers' in records[0]);
+  } finally {
+    if (jobId) {
+      const docs = await documents.getDocumentsForJob({ jobId }).catch(() => []);
+      await jobs.archiveJob({ jobId }).catch(() => {});
+      for (const d of docs) await documents.deleteDocument({ documentId: d.id }).catch(() => {});
+    }
   }
-
-  const records = await res.value();
-  assert.equal(records.length, 1);
-  assert.ok('hamburgers' in records[0]);
 });
 
 // --------------------------------------------------------------------------
