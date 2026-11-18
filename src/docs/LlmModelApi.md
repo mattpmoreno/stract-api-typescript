@@ -4,7 +4,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getLlmModels**](LlmModelApi.md#getllmmodels) | **GET** /llm_model | Get the available LLM models |
+| [**getLlmModels**](LlmModelApi.md#getllmmodels) | **GET** /llm_model | List LLM models |
 
 
 
@@ -12,9 +12,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > Array&lt;LlmModel&gt; getLlmModels()
 
-Get the available LLM models
+List LLM models
 
-Retrieve the list of LLM models that can be selected via llm_model_id when creating a job
+List LLM models with credit costs and capabilities. Use an id as llm_model_id when creating a job; check is_available first.
 
 ### Example
 

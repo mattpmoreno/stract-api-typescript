@@ -4,10 +4,10 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**createFields**](FieldApi.md#createfields) | **POST** /struct/{structId}/field | Create fields for a struct |
+| [**createFields**](FieldApi.md#createfields) | **POST** /struct/{structId}/field | Add fields to a struct |
 | [**deleteField**](FieldApi.md#deletefield) | **DELETE** /field/{fieldId} | Delete a field |
 | [**editField**](FieldApi.md#editfieldoperation) | **PUT** /field/{fieldId} | Edit a field |
-| [**getFields**](FieldApi.md#getfields) | **GET** /struct/{structId}/field | Get data fields for a struct |
+| [**getFields**](FieldApi.md#getfields) | **GET** /struct/{structId}/field | List fields of a struct |
 
 
 
@@ -15,9 +15,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > Array&lt;Field&gt; createFields(structId, createFieldRequest)
 
-Create fields for a struct
+Add fields to a struct
 
-Create one or more fields for the specified struct
+Create one or more fields in the struct. Each field names and specifies a piece of information to extract; write a clear description since it guides LLM extraction . Note that field names become the key used in the resulting JSON or CSV, so names should be JSON and CSV friendly. enum_values is required when type is enum.
 
 ### Example
 
@@ -93,7 +93,7 @@ example().catch(console.error);
 
 Delete a field
 
-Delete the specified field
+Delete the field from its struct. Returns its ID.
 
 ### Example
 
@@ -166,7 +166,7 @@ example().catch(console.error);
 
 Edit a field
 
-Update one or more properties of the specified field. At least one property must be provided.
+Update a field\&#39;s name, description, type or enum_values. Provide at least one. Returns the updated field.
 
 ### Example
 
@@ -240,9 +240,9 @@ example().catch(console.error);
 
 > Array&lt;Field&gt; getFields(structId)
 
-Get data fields for a struct
+List fields of a struct
 
-Retrieve all data field definitions in the specified struct
+List the field definitions (name, description, type) in the struct
 
 ### Example
 

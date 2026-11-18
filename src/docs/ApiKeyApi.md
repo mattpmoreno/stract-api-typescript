@@ -4,7 +4,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getApiKeys**](ApiKeyApi.md#getapikeys) | **GET** /api-key | Get the current account\&#39;s API keys |
+| [**getApiKeys**](ApiKeyApi.md#getapikeys) | **GET** /api-key | List the account\&#39;s API keys |
 
 
 
@@ -12,9 +12,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > Array&lt;ApiKey&gt; getApiKeys()
 
-Get the current account\&#39;s API keys
+List the account\&#39;s API keys
 
-Retrieve all API keys belonging to the current user\&#39;s account
+List all API keys in the current account. Only the last four characters of each key are shown.
 
 ### Example
 

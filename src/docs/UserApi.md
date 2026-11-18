@@ -15,7 +15,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Edit the current user
 
-Update one or more properties of the currently authenticated user. At least one property must be provided.
+Update the current user\&#39;s first_name and/or last_name. Provide at least one. Returns the updated user.
 
 ### Example
 
@@ -89,7 +89,7 @@ example().catch(console.error);
 
 Get the current user
 
-Retrieve the profile of the currently  authenticated user
+Return the profile of the user who owns the API key
 
 ### Example
 

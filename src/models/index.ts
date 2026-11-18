@@ -33,5 +33,6 @@ export * from './LoginRequest';
 export * from './LoginResponse';
 export * from './Struct';
 export * from './SyncTextJobRequest';
+export * from './UploadDocumentFromUrlRequest';
 export * from './UploadTextDocumentRequest';
 export * from './User';

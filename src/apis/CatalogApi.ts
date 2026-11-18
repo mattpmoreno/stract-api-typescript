@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Stract API
- * Get structured output from unstructured inputs  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) 
+ * Get the information you need from your documents  ## Typical workflow  1. Create a struct (`createStruct`) and add fields (`createFields`) describing the data to extract. 2. Upload documents to a catalog or on their own (`uploadDocument`, `uploadTextDocument`, and their no-catalog variants). 3. Create a job (`createJob`) with the struct and the catalog or document IDs. Specifying a  catalog or multiple document IDs will run the job on all the relevant documents automatically. 4. Poll `getJobById` until the job is complete, then download the output (`getJobOutputJson`  or `getJobOutputCsv`). Output will include one line for every document included in the  job.  For a single short document, `uploadDocumentProcessAndRunJob` or `uploadTextDocumentAndRunJob` does steps 2-4 in one call.  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) - **Python**: [`stract-api` on PyPI](https://pypi.org/project/stract-api/) 
  *
  * The version of the OpenAPI document: 0.9.5
  * Contact: matt@stract-api.com
@@ -54,7 +54,7 @@ export interface CatalogApiInterface {
     createCatalogRequestOpts(requestParameters: CreateCatalogOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a new catalog (collection of documents) for the user\'s account
+     * Create an empty catalog. Add documents with uploadDocument or uploadTextDocument.
      * @summary Create a catalog
      * @param {CreateCatalogRequest} createCatalogRequest 
      * @param {*} [options] Override http request option.
@@ -64,7 +64,7 @@ export interface CatalogApiInterface {
     createCatalogRaw(requestParameters: CreateCatalogOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Catalog>>;
 
     /**
-     * Create a new catalog (collection of documents) for the user\'s account
+     * Create an empty catalog. Add documents with uploadDocument or uploadTextDocument.
      * Create a catalog
      */
     createCatalog(requestParameters: CreateCatalogOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Catalog>;
@@ -78,7 +78,7 @@ export interface CatalogApiInterface {
     deleteCatalogRequestOpts(requestParameters: DeleteCatalogRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Deletes the specified catalog. Also deletes all documents belonging to the catalog, including any underlying stored files.
+     * Delete the catalog and all its documents, including stored files. Destructive. See  deleteDocument for details on side effects of deleting a document. Returns the catalog ID.
      * @summary Delete a catalog
      * @param {string} catalogId Unique identifier of the catalog
      * @param {*} [options] Override http request option.
@@ -88,7 +88,7 @@ export interface CatalogApiInterface {
     deleteCatalogRaw(requestParameters: DeleteCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
 
     /**
-     * Deletes the specified catalog. Also deletes all documents belonging to the catalog, including any underlying stored files.
+     * Delete the catalog and all its documents, including stored files. Destructive. See  deleteDocument for details on side effects of deleting a document. Returns the catalog ID.
      * Delete a catalog
      */
     deleteCatalog(requestParameters: DeleteCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
@@ -101,8 +101,8 @@ export interface CatalogApiInterface {
     getCatalogsRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
-     * Retrieve all catalogs (collections of documents) for the user
-     * @summary Get all catalogs
+     * List all catalogs. A catalog is a named collection of documents that a job can run against.
+     * @summary List catalogs
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CatalogApiInterface
@@ -110,8 +110,8 @@ export interface CatalogApiInterface {
     getCatalogsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Catalog>>>;
 
     /**
-     * Retrieve all catalogs (collections of documents) for the user
-     * Get all catalogs
+     * List all catalogs. A catalog is a named collection of documents that a job can run against.
+     * List catalogs
      */
     getCatalogs(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Catalog>>;
 
@@ -160,7 +160,7 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Create a new catalog (collection of documents) for the user\'s account
+     * Create an empty catalog. Add documents with uploadDocument or uploadTextDocument.
      * Create a catalog
      */
     async createCatalogRaw(requestParameters: CreateCatalogOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Catalog>> {
@@ -171,7 +171,7 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Create a new catalog (collection of documents) for the user\'s account
+     * Create an empty catalog. Add documents with uploadDocument or uploadTextDocument.
      * Create a catalog
      */
     async createCatalog(requestParameters: CreateCatalogOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Catalog> {
@@ -215,7 +215,7 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Deletes the specified catalog. Also deletes all documents belonging to the catalog, including any underlying stored files.
+     * Delete the catalog and all its documents, including stored files. Destructive. See  deleteDocument for details on side effects of deleting a document. Returns the catalog ID.
      * Delete a catalog
      */
     async deleteCatalogRaw(requestParameters: DeleteCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
@@ -230,7 +230,7 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Deletes the specified catalog. Also deletes all documents belonging to the catalog, including any underlying stored files.
+     * Delete the catalog and all its documents, including stored files. Destructive. See  deleteDocument for details on side effects of deleting a document. Returns the catalog ID.
      * Delete a catalog
      */
     async deleteCatalog(requestParameters: DeleteCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
@@ -266,8 +266,8 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Retrieve all catalogs (collections of documents) for the user
-     * Get all catalogs
+     * List all catalogs. A catalog is a named collection of documents that a job can run against.
+     * List catalogs
      */
     async getCatalogsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Catalog>>> {
         const requestOptions = await this.getCatalogsRequestOpts();
@@ -277,8 +277,8 @@ export class CatalogApi extends runtime.BaseAPI implements CatalogApiInterface {
     }
 
     /**
-     * Retrieve all catalogs (collections of documents) for the user
-     * Get all catalogs
+     * List all catalogs. A catalog is a named collection of documents that a job can run against.
+     * List catalogs
      */
     async getCatalogs(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Catalog>> {
         const response = await this.getCatalogsRaw(initOverrides);

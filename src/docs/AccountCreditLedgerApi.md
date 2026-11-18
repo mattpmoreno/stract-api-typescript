@@ -4,7 +4,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getAccountCreditLedgerForSpendingUser**](AccountCreditLedgerApi.md#getaccountcreditledgerforspendinguser) | **GET** /account_credit_ledger | Get the account credit ledger |
+| [**getAccountCreditLedgerForSpendingUser**](AccountCreditLedgerApi.md#getaccountcreditledgerforspendinguser) | **GET** /account_credit_ledger | List credit ledger entries |
 
 
 
@@ -12,9 +12,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > Array&lt;AccountCreditLedger&gt; getAccountCreditLedgerForSpendingUser()
 
-Get the account credit ledger
+List credit ledger entries
 
-Retrieve the credit ledger entries created by the current user within their account
+List credit ledger entries created by the current user. A negative amount is credits spent, positive is credits added.
 
 ### Example
 

@@ -4,8 +4,8 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getCurrentCredits**](CreditsApi.md#getcurrentcredits) | **GET** /current_credits | Get the current credit balance |
-| [**getCurrentOrgCredits**](CreditsApi.md#getcurrentorgcredits) | **GET** /current_org_credits | Get the current organization credit balance |
+| [**getCurrentCredits**](CreditsApi.md#getcurrentcredits) | **GET** /current_credits | Get the user\&#39;s credit balance |
+| [**getCurrentOrgCredits**](CreditsApi.md#getcurrentorgcredits) | **GET** /current_org_credits | Get the organization credit balance |
 
 
 
@@ -13,9 +13,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > AccountCreditCache getCurrentCredits()
 
-Get the current credit balance
+Get the user\&#39;s credit balance
 
-Retrieve the credit balance for the user\&#39;s account
+Return the current user\&#39;s credit balance. For the shared balance use getCurrentOrgCredits. Uploads, document processing, and jobs spend credits.
 
 ### Example
 
@@ -77,9 +77,9 @@ This endpoint does not need any parameter.
 
 > AccountCreditCache getCurrentOrgCredits()
 
-Get the current organization credit balance
+Get the organization credit balance
 
-Retrieve the shared organization credit balance for the user\&#39;s account
+Return the credit balance shared by the whole account (suser_id is null)
 
 ### Example
 

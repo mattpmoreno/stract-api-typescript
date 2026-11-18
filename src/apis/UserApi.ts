@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Stract API
- * Get structured output from unstructured inputs  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) 
+ * Get the information you need from your documents  ## Typical workflow  1. Create a struct (`createStruct`) and add fields (`createFields`) describing the data to extract. 2. Upload documents to a catalog or on their own (`uploadDocument`, `uploadTextDocument`, and their no-catalog variants). 3. Create a job (`createJob`) with the struct and the catalog or document IDs. Specifying a  catalog or multiple document IDs will run the job on all the relevant documents automatically. 4. Poll `getJobById` until the job is complete, then download the output (`getJobOutputJson`  or `getJobOutputCsv`). Output will include one line for every document included in the  job.  For a single short document, `uploadDocumentProcessAndRunJob` or `uploadTextDocumentAndRunJob` does steps 2-4 in one call.  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) - **Python**: [`stract-api` on PyPI](https://pypi.org/project/stract-api/) 
  *
  * The version of the OpenAPI document: 0.9.5
  * Contact: matt@stract-api.com
@@ -47,7 +47,7 @@ export interface UserApiInterface {
     editMyUserRequestOpts(requestParameters: EditMyUserOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update one or more properties of the currently authenticated user. At least one property must be provided.
+     * Update the current user\'s first_name and/or last_name. Provide at least one. Returns the updated user.
      * @summary Edit the current user
      * @param {EditMyUserRequest} editMyUserRequest 
      * @param {*} [options] Override http request option.
@@ -57,7 +57,7 @@ export interface UserApiInterface {
     editMyUserRaw(requestParameters: EditMyUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>>;
 
     /**
-     * Update one or more properties of the currently authenticated user. At least one property must be provided.
+     * Update the current user\'s first_name and/or last_name. Provide at least one. Returns the updated user.
      * Edit the current user
      */
     editMyUser(requestParameters: EditMyUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User>;
@@ -70,7 +70,7 @@ export interface UserApiInterface {
     getMyUserRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
-     * Retrieve the profile of the currently  authenticated user
+     * Return the profile of the user who owns the API key
      * @summary Get the current user
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -79,7 +79,7 @@ export interface UserApiInterface {
     getMyUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>>;
 
     /**
-     * Retrieve the profile of the currently  authenticated user
+     * Return the profile of the user who owns the API key
      * Get the current user
      */
     getMyUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User>;
@@ -129,7 +129,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
     }
 
     /**
-     * Update one or more properties of the currently authenticated user. At least one property must be provided.
+     * Update the current user\'s first_name and/or last_name. Provide at least one. Returns the updated user.
      * Edit the current user
      */
     async editMyUserRaw(requestParameters: EditMyUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
@@ -140,7 +140,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
     }
 
     /**
-     * Update one or more properties of the currently authenticated user. At least one property must be provided.
+     * Update the current user\'s first_name and/or last_name. Provide at least one. Returns the updated user.
      * Edit the current user
      */
     async editMyUser(requestParameters: EditMyUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
@@ -176,7 +176,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
     }
 
     /**
-     * Retrieve the profile of the currently  authenticated user
+     * Return the profile of the user who owns the API key
      * Get the current user
      */
     async getMyUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
@@ -187,7 +187,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
     }
 
     /**
-     * Retrieve the profile of the currently  authenticated user
+     * Return the profile of the user who owns the API key
      * Get the current user
      */
     async getMyUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {

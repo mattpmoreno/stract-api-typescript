@@ -6,7 +6,7 @@ All URIs are relative to *https://api.stract-api.com*
 |------------- | ------------- | -------------|
 | [**createCatalog**](CatalogApi.md#createcatalogoperation) | **POST** /catalog | Create a catalog |
 | [**deleteCatalog**](CatalogApi.md#deletecatalog) | **DELETE** /catalog/{catalogId} | Delete a catalog |
-| [**getCatalogs**](CatalogApi.md#getcatalogs) | **GET** /catalog | Get all catalogs |
+| [**getCatalogs**](CatalogApi.md#getcatalogs) | **GET** /catalog | List catalogs |
 
 
 
@@ -16,7 +16,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Create a catalog
 
-Create a new catalog (collection of documents) for the user\&#39;s account
+Create an empty catalog. Add documents with uploadDocument or uploadTextDocument.
 
 ### Example
 
@@ -89,7 +89,7 @@ example().catch(console.error);
 
 Delete a catalog
 
-Deletes the specified catalog. Also deletes all documents belonging to the catalog, including any underlying stored files.
+Delete the catalog and all its documents, including stored files. Destructive. See  deleteDocument for details on side effects of deleting a document. Returns the catalog ID.
 
 ### Example
 
@@ -160,9 +160,9 @@ example().catch(console.error);
 
 > Array&lt;Catalog&gt; getCatalogs()
 
-Get all catalogs
+List catalogs
 
-Retrieve all catalogs (collections of documents) for the user
+List all catalogs. A catalog is a named collection of documents that a job can run against.
 
 ### Example
 

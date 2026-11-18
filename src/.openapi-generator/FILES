@@ -55,6 +55,7 @@ docs/LoginResponse.md
 docs/Struct.md
 docs/StructApi.md
 docs/SyncTextJobRequest.md
+docs/UploadDocumentFromUrlRequest.md
 docs/UploadTextDocumentRequest.md
 docs/User.md
 docs/UserApi.md
@@ -92,6 +93,7 @@ models/LoginRequest.ts
 models/LoginResponse.ts
 models/Struct.ts
 models/SyncTextJobRequest.ts
+models/UploadDocumentFromUrlRequest.ts
 models/UploadTextDocumentRequest.ts
 models/User.ts
 models/index.ts

@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Stract API
- * Get structured output from unstructured inputs  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) 
+ * Get the information you need from your documents  ## Typical workflow  1. Create a struct (`createStruct`) and add fields (`createFields`) describing the data to extract. 2. Upload documents to a catalog or on their own (`uploadDocument`, `uploadTextDocument`, and their no-catalog variants). 3. Create a job (`createJob`) with the struct and the catalog or document IDs. Specifying a  catalog or multiple document IDs will run the job on all the relevant documents automatically. 4. Poll `getJobById` until the job is complete, then download the output (`getJobOutputJson`  or `getJobOutputCsv`). Output will include one line for every document included in the  job.  For a single short document, `uploadDocumentProcessAndRunJob` or `uploadTextDocumentAndRunJob` does steps 2-4 in one call.  ## Machine authentication  Programmatic access to the API is authenticated with an API key. Include the API key in every request as a bearer token in the `authorization` header:  ``` authorization: bearer [apiKey] ```  ## SDKs  Official SDKs are available for the following languages:  - **Node (JavaScript / TypeScript)**: [`stract-api` on npm](https://www.npmjs.com/package/stract-api) - **Java (17+)**: [`com.stract-api:stract-api` on Maven Central](https://central.sonatype.com/artifact/com.stract-api/stract-api) - **Python**: [`stract-api` on PyPI](https://pypi.org/project/stract-api/) 
  *
  * The version of the OpenAPI document: 0.9.5
  * Contact: matt@stract-api.com
@@ -34,8 +34,8 @@ export interface AccountCreditLedgerApiInterface {
     getAccountCreditLedgerForSpendingUserRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
-     * Retrieve the credit ledger entries created by the current user within their account
-     * @summary Get the account credit ledger
+     * List credit ledger entries created by the current user. A negative amount is credits spent, positive is credits added.
+     * @summary List credit ledger entries
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AccountCreditLedgerApiInterface
@@ -43,8 +43,8 @@ export interface AccountCreditLedgerApiInterface {
     getAccountCreditLedgerForSpendingUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AccountCreditLedger>>>;
 
     /**
-     * Retrieve the credit ledger entries created by the current user within their account
-     * Get the account credit ledger
+     * List credit ledger entries created by the current user. A negative amount is credits spent, positive is credits added.
+     * List credit ledger entries
      */
     getAccountCreditLedgerForSpendingUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AccountCreditLedger>>;
 
@@ -83,8 +83,8 @@ export class AccountCreditLedgerApi extends runtime.BaseAPI implements AccountCr
     }
 
     /**
-     * Retrieve the credit ledger entries created by the current user within their account
-     * Get the account credit ledger
+     * List credit ledger entries created by the current user. A negative amount is credits spent, positive is credits added.
+     * List credit ledger entries
      */
     async getAccountCreditLedgerForSpendingUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AccountCreditLedger>>> {
         const requestOptions = await this.getAccountCreditLedgerForSpendingUserRequestOpts();
@@ -94,8 +94,8 @@ export class AccountCreditLedgerApi extends runtime.BaseAPI implements AccountCr
     }
 
     /**
-     * Retrieve the credit ledger entries created by the current user within their account
-     * Get the account credit ledger
+     * List credit ledger entries created by the current user. A negative amount is credits spent, positive is credits added.
+     * List credit ledger entries
      */
     async getAccountCreditLedgerForSpendingUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AccountCreditLedger>> {
         const response = await this.getAccountCreditLedgerForSpendingUserRaw(initOverrides);
