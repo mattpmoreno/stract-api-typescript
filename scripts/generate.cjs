@@ -18,7 +18,14 @@ console.log(`Generating from ${specUrl}`);
 
 const result = spawnSync(
   'npx',
-  ['openapi-generator-cli', 'generate', '--generator-key', 'stract', '--input-spec', specUrl],
+  [
+    'openapi-generator-cli', 'generate',
+    '--generator-name', 'typescript-fetch',
+    '--input-spec', specUrl,
+    '--output', 'src',
+    '--additional-properties',
+    'supportsES6=true,useSingleRequestParameter=true,withInterfaces=true',
+  ],
   { stdio: 'inherit', shell: true },
 );
 process.exit(result.status ?? 1);
