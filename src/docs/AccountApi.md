@@ -6,8 +6,8 @@ All URIs are relative to *https://api.stract-api.com*
 |------------- | ------------- | -------------|
 | [**createAccountUser**](AccountApi.md#createaccountuseroperation) | **POST** /account/user | Add a user to the current account |
 | [**editAccount**](AccountApi.md#editaccountoperation) | **PUT** /account | Edit the current account |
-| [**getAccount**](AccountApi.md#getaccount) | **GET** /account | Get information about user\&#39;s account |
-| [**getAccountUsers**](AccountApi.md#getaccountusers) | **GET** /account/user | Get the users in the current account |
+| [**getAccount**](AccountApi.md#getaccount) | **GET** /account | Get the current account |
+| [**getAccountUsers**](AccountApi.md#getaccountusers) | **GET** /account/user | List users in the current account |
 
 
 
@@ -17,7 +17,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Add a user to the current account
 
-Create a new user and add them to the current user\&#39;s account. Only account admins may perform this action, and the account must have an active subscription to add other users. Accounts with a team subscription are limited to 10 users.
+Create a user and add them to the current account. Admin only. Requires an active subscription; team subscriptions are limited to 10 users.
 
 ### Example
 
@@ -90,7 +90,7 @@ example().catch(console.error);
 
 Edit the current account
 
-Update the account the current user belongs to. Only account admins may perform this action.
+Rename the current account. Admin only. Returns the updated account.
 
 ### Example
 
@@ -161,9 +161,9 @@ example().catch(console.error);
 
 > Account getAccount()
 
-Get information about user\&#39;s account
+Get the current account
 
-Retrieve information about the account the current user belongs to
+Return the current user\&#39;s account, including their role (admin or base) and subscription status
 
 ### Example
 
@@ -225,9 +225,9 @@ This endpoint does not need any parameter.
 
 > Array&lt;AccountUser&gt; getAccountUsers()
 
-Get the users in the current account
+List users in the current account
 
-Retrieve all users belonging to the current user\&#39;s account. Only account admins may perform this action.
+List all users in the current account. Admin only.
 
 ### Example
 

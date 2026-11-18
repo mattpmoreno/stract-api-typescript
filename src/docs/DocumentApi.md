@@ -5,15 +5,17 @@ All URIs are relative to *https://api.stract-api.com*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**deleteDocument**](DocumentApi.md#deletedocument) | **DELETE** /document/{documentId} | Delete a document |
-| [**getCatalogDocuments**](DocumentApi.md#getcatalogdocuments) | **GET** /catalog/{catalogId}/document | Get documents for a catalog |
-| [**getDocumentLink**](DocumentApi.md#getdocumentlink) | **GET** /document/{documentId}/link | Get a link to a document |
-| [**getDocumentText**](DocumentApi.md#getdocumenttext) | **GET** /catalog/{catalogId}/document/{documentId}/text | Get the extracted text of a document |
-| [**getDocumentsForJob**](DocumentApi.md#getdocumentsforjob) | **GET** /job/{jobId}/document | Get the documents for a job |
-| [**getUserDocuments**](DocumentApi.md#getuserdocuments) | **GET** /document | Get all documents for the user |
-| [**uploadDocument**](DocumentApi.md#uploaddocument) | **POST** /catalog/{catalogId}/document | Upload a file to the specified catalog |
-| [**uploadDocumentNoCatalog**](DocumentApi.md#uploaddocumentnocatalog) | **POST** /document | Upload a document |
-| [**uploadTextDocument**](DocumentApi.md#uploadtextdocumentoperation) | **POST** /catalog/{catalogId}/document/text | Upload text as a document to the specified catalog |
-| [**uploadTextDocumentNoCatalog**](DocumentApi.md#uploadtextdocumentnocatalog) | **POST** /document/text | Upload text as a document |
+| [**getCatalogDocuments**](DocumentApi.md#getcatalogdocuments) | **GET** /catalog/{catalogId}/document | List documents in a catalog |
+| [**getDocumentLink**](DocumentApi.md#getdocumentlink) | **GET** /document/{documentId}/link | Get a document download link |
+| [**getDocumentText**](DocumentApi.md#getdocumenttext) | **GET** /catalog/{catalogId}/document/{documentId}/text | Get a document\&#39;s extracted text |
+| [**getDocumentsForJob**](DocumentApi.md#getdocumentsforjob) | **GET** /job/{jobId}/document | List documents in a job |
+| [**getUserDocuments**](DocumentApi.md#getuserdocuments) | **GET** /document | List all documents |
+| [**uploadDocument**](DocumentApi.md#uploaddocument) | **POST** /catalog/{catalogId}/document | Upload a file to a catalog |
+| [**uploadDocumentFromUrl**](DocumentApi.md#uploaddocumentfromurloperation) | **POST** /catalog/{catalogId}/document/url | Upload a file from a URL to a catalog |
+| [**uploadDocumentFromUrlNoCatalog**](DocumentApi.md#uploaddocumentfromurlnocatalog) | **POST** /document/url | Upload a file from a URL |
+| [**uploadDocumentNoCatalog**](DocumentApi.md#uploaddocumentnocatalog) | **POST** /document | Upload a file without a catalog |
+| [**uploadTextDocument**](DocumentApi.md#uploadtextdocumentoperation) | **POST** /catalog/{catalogId}/document/text | Add a text document to a catalog |
+| [**uploadTextDocumentNoCatalog**](DocumentApi.md#uploadtextdocumentnocatalog) | **POST** /document/text | Create a text document without a catalog |
 
 
 
@@ -23,7 +25,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Delete a document
 
-Deletes the specified document and its stored file. The document is also removed from any jobs it was part of, along with its associated processing details.
+Delete the document and its stored file. It is also removed from any jobs it was part of, along with its processing details. Destructive.
 
 ### Example
 
@@ -94,9 +96,9 @@ example().catch(console.error);
 
 > Array&lt;Document&gt; getCatalogDocuments(catalogId)
 
-Get documents for a catalog
+List documents in a catalog
 
-Retrieve all documents belonging to the specified catalog
+List all documents in the catalog
 
 ### Example
 
@@ -167,9 +169,9 @@ example().catch(console.error);
 
 > DocumentLink getDocumentLink(documentId)
 
-Get a link to a document
+Get a document download link
 
-Retrieve a link to download the specified document. Only applies to documents with an uploaded file; text-only documents have no file and return a 404.
+Return a URL to download the original uploaded file. Text-only documents have no file and return 404.
 
 ### Example
 
@@ -241,9 +243,9 @@ example().catch(console.error);
 
 > DocumentText getDocumentText(catalogId, documentId)
 
-Get the extracted text of a document
+Get a document\&#39;s extracted text
 
-Retrieve the extracted text content of the specified document, if it has been processed
+Return the full extracted text of the document. text is null until processing completes.
 
 ### Example
 
@@ -317,9 +319,9 @@ example().catch(console.error);
 
 > Array&lt;Document&gt; getDocumentsForJob(jobId)
 
-Get the documents for a job
+List documents in a job
 
-Retrieve all documents the specified job was run against
+List the documents the job was run against
 
 ### Example
 
@@ -390,9 +392,9 @@ example().catch(console.error);
 
 > Array&lt;Document&gt; getUserDocuments()
 
-Get all documents for the user
+List all documents
 
-Retrieve all documents belonging to the user\&#39;s account, across all catalogs
+List all documents in the account, across all catalogs
 
 ### Example
 
@@ -454,9 +456,9 @@ This endpoint does not need any parameter.
 
 > Document uploadDocument(catalogId, file)
 
-Upload a file to the specified catalog
+Upload a file to a catalog
 
-Upload a file to the specified catalog. Files are capped at 100MB, and raw text files (such as .txt, .csv or .json) are capped at 10MB for analysis.
+Upload a file (multipart) to the catalog. Spends credits. Limits: 100MB per file, 10MB for raw text files (.txt, .csv, .json). Returns the document.
 
 ### Example
 
@@ -527,13 +529,164 @@ example().catch(console.error);
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
+## uploadDocumentFromUrl
+
+> Document uploadDocumentFromUrl(catalogId, uploadDocumentFromUrlRequest)
+
+Upload a file from a URL to a catalog
+
+Download a file from a https URL and create a document in the catalog. The URL must be reachable without authentication, for example a public link or a presigned URL. Spends credits. Limits: 100MB per file, 10MB for raw text files (.txt, .csv, .json). Returns the document.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DocumentApi,
+} from '';
+import type { UploadDocumentFromUrlOperationRequest } from '';
+
+async function example() {
+  console.log("🚀 Testing  SDK...");
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: bearerAuth
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new DocumentApi(config);
+
+  const body = {
+    // string | Unique identifier of the catalog
+    catalogId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // UploadDocumentFromUrlRequest
+    uploadDocumentFromUrlRequest: ...,
+  } satisfies UploadDocumentFromUrlOperationRequest;
+
+  try {
+    const data = await api.uploadDocumentFromUrl(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **catalogId** | `string` | Unique identifier of the catalog | [Defaults to `undefined`] |
+| **uploadDocumentFromUrlRequest** | [UploadDocumentFromUrlRequest](UploadDocumentFromUrlRequest.md) |  | |
+
+### Return type
+
+[**Document**](Document.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successfully uploaded document |  -  |
+| **400** | Catalog ID is not UUID || Data was invalid || The URL is not https, is not reachable, or points to a private address || The file extension is not supported || The file is too large (100MB maximum) |  -  |
+| **401** | Not permitted to access this catalog |  -  |
+| **402** | Insufficient credits for file upload |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## uploadDocumentFromUrlNoCatalog
+
+> Document uploadDocumentFromUrlNoCatalog(uploadDocumentFromUrlRequest)
+
+Upload a file from a URL
+
+Download a file from a https URL and create a document (no catalog). The URL must be reachable without authentication, for example a public link or a presigned URL. Spends credits. Limits: 100MB per file, 10MB for raw text files (.txt, .csv, .json). Returns the document.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DocumentApi,
+} from '';
+import type { UploadDocumentFromUrlNoCatalogRequest } from '';
+
+async function example() {
+  console.log("🚀 Testing  SDK...");
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: bearerAuth
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new DocumentApi(config);
+
+  const body = {
+    // UploadDocumentFromUrlRequest
+    uploadDocumentFromUrlRequest: ...,
+  } satisfies UploadDocumentFromUrlNoCatalogRequest;
+
+  try {
+    const data = await api.uploadDocumentFromUrlNoCatalog(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **uploadDocumentFromUrlRequest** | [UploadDocumentFromUrlRequest](UploadDocumentFromUrlRequest.md) |  | |
+
+### Return type
+
+[**Document**](Document.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successfully uploaded document |  -  |
+| **400** | Data was invalid || The URL is not https, is not reachable, or points to a private address || The file extension is not supported || The file is too large (100MB maximum) |  -  |
+| **401** | You are not permitted to access this information |  -  |
+| **402** | Insufficient credits for file upload |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
 ## uploadDocumentNoCatalog
 
 > Document uploadDocumentNoCatalog(file)
 
-Upload a document
+Upload a file without a catalog
 
-Uploads a document. Files are capped at 100MB, and raw text files (such as .txt, .csv or .json) are capped at 10MB for analysis.
+Upload a file (multipart) that is not placed in a catalog. Spends credits. Limits: 100MB per file, 10MB for raw text files (.txt, .csv, .json). Returns the document.
 
 ### Example
 
@@ -605,9 +758,9 @@ example().catch(console.error);
 
 > Document uploadTextDocument(catalogId, uploadTextDocumentRequest)
 
-Upload text as a document to the specified catalog
+Add a text document to a catalog
 
-Create a document in the specified catalog directly from text in the request body. No file upload is needed and the document is immediately ready for analysis. The request body is capped at 10MB.
+Create a document in the catalog from text in the request body. No file upload needed; it is ready for analysis immediately. Body is capped at 10MB.
 
 ### Example
 
@@ -681,9 +834,9 @@ example().catch(console.error);
 
 > Document uploadTextDocumentNoCatalog(uploadTextDocumentRequest)
 
-Upload text as a document
+Create a text document without a catalog
 
-Create a document directly from text in the request body. No file upload is needed and the document is immediately ready for analysis. The request body is capped at 10MB.
+Create a document from text in the request body, not placed in a catalog. No file upload needed; it is ready for analysis immediately. Body is capped at 10MB.
 
 ### Example
 

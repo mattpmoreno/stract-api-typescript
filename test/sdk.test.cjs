@@ -209,6 +209,8 @@ test('every API group in the README is exported with its methods', () => {
       'uploadDocumentNoCatalog',
       'uploadTextDocument',
       'uploadTextDocumentNoCatalog',
+      'uploadDocumentFromUrl',
+      'uploadDocumentFromUrlNoCatalog',
       'getUserDocuments',
       'getCatalogDocuments',
       'getDocumentsForJob',
@@ -608,6 +610,93 @@ test('file document without a catalog: lifecycle', live, async () => {
   }
   assert.equal(removed.documentId, doc.id);
   assert.ok(!ids(await documents.getUserDocuments()).has(doc.id));
+});
+
+// --------------------------------------------------------------------------
+// Uploads from a URL. The presigned link of an uploaded document is a URL the
+// API can download without authentication, so each test uploads a file, takes
+// its link, and uploads from that link.
+// --------------------------------------------------------------------------
+
+test('upload from URL to a catalog', live, async () => {
+  const catalog = await catalogs.createCatalog({
+    createCatalogRequest: { name: unique('sdk-url-catalog') },
+  });
+  try {
+    const source = await documents.uploadDocument({
+      catalogId: catalog.id,
+      file: textFile(`${unique('url-source')}.txt`, 'Eight hamburgers and a root beer'),
+    });
+    const { link } = await documents.getDocumentLink({ documentId: source.id });
+    assert.ok(link.startsWith('https'), `expected an https link, got ${link}`);
+
+    const copy = await documents.uploadDocumentFromUrl({
+      catalogId: catalog.id,
+      uploadDocumentFromUrlRequest: { url: link, filename: `${unique('url-copy')}.txt` },
+    });
+    assert.notEqual(copy.id, source.id);
+    assert.equal(copy.catalogId, catalog.id);
+    assert.equal(copy.extension.replace(/^\./, ''), 'txt');
+
+    assert.deepEqual(
+      ids(await documents.getCatalogDocuments({ catalogId: catalog.id })),
+      new Set([source.id, copy.id]),
+    );
+  } finally {
+    // Deleting the catalog also deletes the documents in it.
+    await catalogs.deleteCatalog({ catalogId: catalog.id });
+  }
+});
+
+test('upload from URL without a catalog', live, async () => {
+  const source = await documents.uploadDocumentNoCatalog({
+    file: textFile(`${unique('url-source')}.txt`, 'Nine hamburgers and a lemonade'),
+  });
+  let copy;
+  try {
+    const { link } = await documents.getDocumentLink({ documentId: source.id });
+    assert.ok(link.startsWith('https'), `expected an https link, got ${link}`);
+
+    copy = await documents.uploadDocumentFromUrlNoCatalog({
+      uploadDocumentFromUrlRequest: {
+        url: link,
+        filename: `${unique('url-copy')}.txt`,
+      },
+    });
+    assert.notEqual(copy.id, source.id);
+    assert.equal(copy.extension.replace(/^\./, ''), 'txt');
+
+    const userDocIds = ids(await documents.getUserDocuments());
+    assert.ok(userDocIds.has(source.id) && userDocIds.has(copy.id));
+  } finally {
+    await documents.deleteDocument({ documentId: source.id });
+    if (copy) await documents.deleteDocument({ documentId: copy.id });
+  }
+});
+
+test('upload from URL rejects URLs that are not https', live, async () => {
+  const url = 'http://stract-api.com/order.txt';
+  await assertStatus(
+    documents.uploadDocumentFromUrlNoCatalog({
+      uploadDocumentFromUrlRequest: { url },
+    }),
+    [400],
+  );
+
+  const catalog = await catalogs.createCatalog({
+    createCatalogRequest: { name: unique('sdk-url-reject') },
+  });
+  try {
+    await assertStatus(
+      documents.uploadDocumentFromUrl({
+        catalogId: catalog.id,
+        uploadDocumentFromUrlRequest: { url },
+      }),
+      [400],
+    );
+  } finally {
+    await catalogs.deleteCatalog({ catalogId: catalog.id });
+  }
 });
 
 // --------------------------------------------------------------------------

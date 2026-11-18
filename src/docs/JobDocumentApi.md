@@ -4,8 +4,8 @@ All URIs are relative to *https://api.stract-api.com*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getJobDocumentOutput**](JobDocumentApi.md#getjobdocumentoutput) | **GET** /job_document/{jobDocId}/output | Get the output for a job document |
-| [**getJobDocuments**](JobDocumentApi.md#getjobdocuments) | **GET** /job/{jobId}/job_document | Get the status of document analysis in a job |
+| [**getJobDocumentOutput**](JobDocumentApi.md#getjobdocumentoutput) | **GET** /job_document/{jobDocId}/output | Get extracted data for one job document |
+| [**getJobDocuments**](JobDocumentApi.md#getjobdocuments) | **GET** /job/{jobId}/job_document | List per-document status for a job |
 
 
 
@@ -13,9 +13,9 @@ All URIs are relative to *https://api.stract-api.com*
 
 > JobOutput getJobDocumentOutput(jobDocId)
 
-Get the output for a job document
+Get extracted data for one job document
 
-Retrieve the extracted structured data for the specified job document
+Return the extracted data, keyed by field name, for one document in a job. Null until the document is processed.
 
 ### Example
 
@@ -86,9 +86,9 @@ example().catch(console.error);
 
 > Array&lt;JobDocument&gt; getJobDocuments(jobId)
 
-Get the status of document analysis in a job
+List per-document status for a job
 
-Retrieve the per-document status and analysis results for the specified job
+List each document in the job with its status, errors and credits used. Use to find failed documents or a jobDocId for getJobDocumentOutput.
 
 ### Example
 

@@ -272,20 +272,21 @@ Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/st
    npm run generate
    npm run build
    ```
-3. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
-4. **Bump the version.**
+3. **Add new tests** Add tests for new endpoints, as necessary
+4. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
+5. **Bump the version.**
    ```bash
    npm version patch --no-git-tag-version
    ```
    This updates `package.json` and `package-lock.json` without creating a commit or tag. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods.
-5. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
-6. **Publish from `main`.** Check out the updated `main`, then:
+6. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
+7. **Publish from `main`.** Check out the updated `main`, then:
    ```bash
    npm login           # first time, or if your session has expired
    npm publish
    ```
    `prepublishOnly` rebuilds `dist/` first, and the build copies `LICENSE` into it. Enter a one-time code if your npm account requires one.
-7. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
+8. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
    ```bash
    git tag vX.Y.Z
    git push origin vX.Y.Z

@@ -5,8 +5,8 @@ All URIs are relative to *https://api.stract-api.com*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**archiveStruct**](StructApi.md#archivestruct) | **POST** /struct/{structId}/archive | Archive a struct |
-| [**createStruct**](StructApi.md#createstructoperation) | **POST** /struct | Create a new data structure |
-| [**getStructs**](StructApi.md#getstructs) | **GET** /struct | Get all data structures |
+| [**createStruct**](StructApi.md#createstructoperation) | **POST** /struct | Create a struct |
+| [**getStructs**](StructApi.md#getstructs) | **GET** /struct | List structs |
 
 
 
@@ -16,7 +16,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Archive a struct
 
-Marks the specified struct as archived
+Archive the struct. Returns its ID.
 
 ### Example
 
@@ -87,9 +87,9 @@ example().catch(console.error);
 
 > Struct createStruct(createStructRequest)
 
-Create a new data structure
+Create a struct
 
-Create a new data structure to be used in document analysis
+Create an empty struct. Next add fields with createFields, then run a job with createJob.
 
 ### Example
 
@@ -160,9 +160,9 @@ example().catch(console.error);
 
 > Array&lt;Struct&gt; getStructs()
 
-Get all data structures
+List structs
 
-Retrieve all data structures for user
+List all structs. A struct is a named set of fields that defines what data to extract from documents. Archived structs are excluded.
 
 ### Example
 
@@ -214,7 +214,7 @@ This endpoint does not need any parameter.
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | List of structs |  -  |
+| **200** | List of structs (archived structs excluded) |  -  |
 | **401** | Unauthorized |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)

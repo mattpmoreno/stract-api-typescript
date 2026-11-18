@@ -6,14 +6,14 @@ All URIs are relative to *https://api.stract-api.com*
 |------------- | ------------- | -------------|
 | [**archiveJob**](JobApi.md#archivejob) | **POST** /job/{jobId}/archive | Archive a job |
 | [**cancelJob**](JobApi.md#canceljob) | **POST** /job/{jobId}/cancel | Cancel a job |
-| [**createJob**](JobApi.md#createjoboperation) | **POST** /struct/{structId}/job | Create a job |
-| [**getJobById**](JobApi.md#getjobbyid) | **GET** /job/{jobId} | Get a job by ID |
-| [**getJobOutputCsv**](JobApi.md#getjoboutputcsv) | **GET** /job/{jobId}/output_csv | Get the output for a job as CSV |
-| [**getJobOutputJson**](JobApi.md#getjoboutputjson) | **GET** /job/{jobId}/output_json | Get the output for a job as JSON |
-| [**getStructJobs**](JobApi.md#getstructjobs) | **GET** /struct/{structId}/job | Get all jobs for the specified struct |
-| [**getUserJobs**](JobApi.md#getuserjobs) | **GET** /job | Get all jobs for the user |
-| [**uploadDocumentProcessAndRunJob**](JobApi.md#uploaddocumentprocessandrunjob) | **POST** /struct/{structId}/job/sync | Upload a document, run an analysis job on that document, and download the output. For API use. |
-| [**uploadTextDocumentAndRunJob**](JobApi.md#uploadtextdocumentandrunjob) | **POST** /struct/{structId}/job/sync/text | Create a document from text, run an analysis job on that document, and download the output. For API use. |
+| [**createJob**](JobApi.md#createjoboperation) | **POST** /struct/{structId}/job | Create an extraction job |
+| [**getJobById**](JobApi.md#getjobbyid) | **GET** /job/{jobId} | Get a job |
+| [**getJobOutputCsv**](JobApi.md#getjoboutputcsv) | **GET** /job/{jobId}/output_csv | Download job output as CSV |
+| [**getJobOutputJson**](JobApi.md#getjoboutputjson) | **GET** /job/{jobId}/output_json | Download job output as JSON |
+| [**getStructJobs**](JobApi.md#getstructjobs) | **GET** /struct/{structId}/job | List jobs for a struct |
+| [**getUserJobs**](JobApi.md#getuserjobs) | **GET** /job | List all jobs |
+| [**uploadDocumentProcessAndRunJob**](JobApi.md#uploaddocumentprocessandrunjob) | **POST** /struct/{structId}/job/sync | Upload a file, run a job, and return the output |
+| [**uploadTextDocumentAndRunJob**](JobApi.md#uploadtextdocumentandrunjob) | **POST** /struct/{structId}/job/sync/text | Submit text, run a job, and return the output |
 
 
 
@@ -23,7 +23,7 @@ All URIs are relative to *https://api.stract-api.com*
 
 Archive a job
 
-Marks the specified job as archived
+Archive the job. Returns its ID.
 
 ### Example
 
@@ -96,7 +96,7 @@ example().catch(console.error);
 
 Cancel a job
 
-Cancel the specified job and stopping any further analysis from happening
+Stop a running job so no further documents are analyzed. Returns the updated job.
 
 ### Example
 
@@ -167,9 +167,9 @@ example().catch(console.error);
 
 > Job createJob(structId, createJobRequest)
 
-Create a job
+Create an extraction job
 
-Create a job to extract structured data from a catalog or set of documents using the specified struct
+Start an async job that extracts the struct\&#39;s fields from documents. Target either catalog_id or document_ids, not both. Poll getJobById until it finishes, then download the output with getJobOutputJson or getJobOutputCsv. Spends credits.
 
 ### Example
 
@@ -243,9 +243,9 @@ example().catch(console.error);
 
 > Job getJobById(jobId)
 
-Get a job by ID
+Get a job
 
-Retrieve the specified job
+Return a job and its status. Poll until status is complete, error or cancelled.
 
 ### Example
 
@@ -316,9 +316,9 @@ example().catch(console.error);
 
 > string getJobOutputCsv(jobId)
 
-Get the output for a job as CSV
+Download job output as CSV
 
-Download the extracted structured data for every document in the job as a CSV file. The header row is the union of fields across all documents (including document_name); a document missing a given field leaves that cell empty.
+Return the extracted data for all documents in the job as CSV, one row per document. The header is the union of fields across documents plus document_name; missing values are empty. Call once the job is complete.
 
 ### Example
 
@@ -389,9 +389,9 @@ example().catch(console.error);
 
 > Array&lt;JobOutputRecord&gt; getJobOutputJson(jobId)
 
-Get the output for a job as JSON
+Download job output as JSON
 
-Download the extracted structured data for every document in the job as a JSON file
+Return the extracted data for all documents in the job as a JSON array, one object per document. Call once the job is complete.
 
 ### Example
 
@@ -462,9 +462,9 @@ example().catch(console.error);
 
 > Array&lt;Job&gt; getStructJobs(structId)
 
-Get all jobs for the specified struct
+List jobs for a struct
 
-Get all jobs for the specified struct
+List all jobs that were run with the struct. Archived jobs are excluded.
 
 ### Example
 
@@ -524,7 +524,7 @@ example().catch(console.error);
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | List of jobs for struct |  -  |
+| **200** | List of jobs for struct (archived jobs excluded) |  -  |
 | **400** | Struct ID is not a valid UUID |  -  |
 | **401** | Not permitted to access this struct |  -  |
 
@@ -535,9 +535,9 @@ example().catch(console.error);
 
 > Array&lt;Job&gt; getUserJobs()
 
-Get all jobs for the user
+List all jobs
 
-Retrieve all jobs belonging to the user\&#39;s account, across all structs
+List all jobs in the account, across all structs. Archived jobs are excluded.
 
 ### Example
 
@@ -589,7 +589,7 @@ This endpoint does not need any parameter.
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | List of jobs |  -  |
+| **200** | List of jobs (archived jobs excluded) |  -  |
 | **401** | Unauthorized |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
@@ -599,9 +599,9 @@ This endpoint does not need any parameter.
 
 > Array&lt;JobOutputRecord&gt; uploadDocumentProcessAndRunJob(structId, file, additionalInstructions, outputType, llmModelId, llmModelBucket)
 
-Upload a document, run an analysis job on that document, and download the output. For API use.
+Upload a file, run a job, and return the output
 
-Uploads a single document, processes it, runs an analysis job against it using the  specified struct, and returns the extracted data as a file, all in one request. Please note that it is best to use this endpoint with shorter documents (&lt;20k characters), otherwise the request is likely to timeout. Files are capped at 100MB, and raw text files (such as .txt, .csv or .json) are capped at 10MB for analysis. The IDs of the document and the job are returned in the &#x60;stract-document-id&#x60; and &#x60;stract-job-id&#x60; response headers so the document and job can be retrieved later, for example with &#x60;GET /job/{jobId}&#x60; or &#x60;GET /document/{documentId}/link&#x60;.  The request waits about 100 seconds for the job to finish. If it has not finished by then, a &#x60;202&#x60; is returned and the job keeps running; use the job ID to check on it and download the output later. The ID headers are also included on the &#x60;202&#x60; and &#x60;422&#x60; responses. The document ID header is included on a &#x60;400&#x60; caused by an invalid request field,  so you can run a subsequent job on that document without having to upload again. Audio  files are not supported on this endpoint.
+One call: upload a single file, run a job with the struct, and return the extracted data as a file. Best for short documents (&lt;20k characters); longer ones are likely to time out, so use uploadDocument and createJob instead. Limits: 100MB per file, 10MB for raw text files (.txt, .csv, .json). Audio is not supported. Waits about 100 seconds. If the job is not finished, returns &#x60;202&#x60; and the job keeps running; fetch the output later with the job ID (getJobById, getJobOutputJson). The &#x60;stract-document-id&#x60; and &#x60;stract-job-id&#x60; response headers are returned on &#x60;200&#x60;, &#x60;202&#x60; and &#x60;422&#x60;. &#x60;stract-document-id&#x60; is also returned on a &#x60;400&#x60; for an invalid request field, so you can create a job on that document without uploading again.
 
 ### Example
 
@@ -690,9 +690,9 @@ example().catch(console.error);
 
 > Array&lt;JobOutputRecord&gt; uploadTextDocumentAndRunJob(structId, syncTextJobRequest)
 
-Create a document from text, run an analysis job on that document, and download the output. For API use.
+Submit text, run a job, and return the output
 
-Creates a document directly from text in the request body, runs an analysis job against it using the specified struct, and returns the extracted data as a file, all in one request. Please note that it is best to use this endpoint with shorter documents (&lt;20k characters), otherwise the request is likely to timeout. The request body is capped at 10MB. The IDs of the document and the job are returned in the &#x60;stract-document-id&#x60; and &#x60;stract-job-id&#x60; response headers so the document and job can be retrieved later, for example with &#x60;GET /job/{jobId}&#x60; or &#x60;GET /document/{documentId}/link&#x60;.  The request waits about 100 seconds for the job to finish. If it has not finished by then, a &#x60;202&#x60; is returned and the job keeps running; use the job ID to check on it and download the output later. The ID headers are also included on the &#x60;202&#x60; and &#x60;422&#x60; responses.
+One call: create a document from text, run a job with the struct, and return the extracted data as a file. Best for short documents (&lt;20k characters); longer ones are likely to time out, so use uploadTextDocument and createJob instead. Body is capped at 10MB. Waits about 100 seconds. If the job is not finished, returns &#x60;202&#x60; and the job keeps running; fetch the output later with the job ID (getJobById, getJobOutputJson). The &#x60;stract-document-id&#x60; and &#x60;stract-job-id&#x60; response headers are returned on &#x60;200&#x60;, &#x60;202&#x60; and &#x60;422&#x60;.
 
 ### Example
 
