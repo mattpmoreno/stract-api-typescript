@@ -658,7 +658,7 @@ test('upload from URL without a catalog', live, async () => {
     assert.ok(link.startsWith('https'), `expected an https link, got ${link}`);
 
     copy = await documents.uploadDocumentFromUrlNoCatalog({
-      uploadDocumentFromUrlNoCatalogRequest: {
+      uploadDocumentFromUrlRequest: {
         url: link,
         filename: `${unique('url-copy')}.txt`,
       },
@@ -678,7 +678,7 @@ test('upload from URL rejects URLs that are not https', live, async () => {
   const url = 'http://stract-api.com/order.txt';
   await assertStatus(
     documents.uploadDocumentFromUrlNoCatalog({
-      uploadDocumentFromUrlNoCatalogRequest: { url },
+      uploadDocumentFromUrlRequest: { url },
     }),
     [400],
   );
