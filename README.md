@@ -49,7 +49,7 @@ const documents = new DocumentApi(config);
 | `FieldApi` | `createFields`, `getFields`, `editField`, `deleteField` |
 | `JobApi` | `uploadTextDocumentAndRunJob`, `uploadDocumentProcessAndRunJob`, `createJob`, `getJobById`, `getJobOutputJson`, `getJobOutputCsv`, `getStructJobs`, `getUserJobs`, `cancelJob`, `archiveJob` |
 | `JobDocumentApi` | `getJobDocuments`, `getJobDocumentOutput` |
-| `DocumentApi` | `uploadDocument`, `uploadDocumentNoCatalog`, `uploadTextDocument`, `uploadTextDocumentNoCatalog`, `getUserDocuments`, `getCatalogDocuments`, `getDocumentsForJob`, `getDocumentText`, `getDocumentLink`, `deleteDocument` |
+| `DocumentApi` | `uploadDocument`, `uploadDocumentNoCatalog`, `uploadDocumentFromUrl`, `uploadDocumentFromUrlNoCatalog`, `uploadTextDocument`, `uploadTextDocumentNoCatalog`, `getUserDocuments`, `getCatalogDocuments`, `getDocumentsForJob`, `getDocumentText`, `getDocumentLink`, `deleteDocument` |
 | `CatalogApi` | `createCatalog`, `getCatalogs`, `deleteCatalog` |
 | `LlmModelApi` | `getLlmModels` |
 | `CreditsApi` | `getCurrentCredits`, `getCurrentOrgCredits` |
@@ -274,19 +274,20 @@ Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/st
    ```
 3. **Add new tests** Add tests for new endpoints, as necessary
 4. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
-5. **Bump the version.**
+5. **Update the README.** Add any new endpoints to the methods table in [API groups](#api-groups), under the class that owns them (or add a row for a new class).
+6. **Bump the version.**
    ```bash
    npm version patch --no-git-tag-version
    ```
    This updates `package.json` and `package-lock.json` without creating a commit or tag. Use patch for fixes and regenerations that don't change the API surface, minor for new endpoints or fields, and major for breaking changes to existing methods.
-6. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
-7. **Publish from `main`.** Check out the updated `main`, then:
+7. **Commit and merge.** Commit the regenerated `src/`, the version bump and any other changes, then merge the branch into `main`.
+8. **Publish from `main`.** Check out the updated `main`, then:
    ```bash
    npm login           # first time, or if your session has expired
    npm publish
    ```
    `prepublishOnly` rebuilds `dist/` first, and the build copies `LICENSE` into it. Enter a one-time code if your npm account requires one.
-8. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
+9. **Tag the release.** Once the publish succeeds, tag the commit on `main` and push the tag:
    ```bash
    git tag vX.Y.Z
    git push origin vX.Y.Z
