@@ -274,7 +274,8 @@ Releases are published to npm as [`stract-api`](https://www.npmjs.com/package/st
    ```
 3. **Add new tests** Add tests for new endpoints, as necessary
 4. **Run the tests.** `npm run test:sdk`. These need `STRACT_API_KEY` and `STRACT_API_BASE_URL` in `.env`, so point them at a deployment you're happy to test against.
-5. **Update the README.** Add any new endpoints to the methods table in [API groups](#api-groups), under the class that owns them (or add a row for a new class).
+5. **Update the README.** Add any new endpoints to the API methods table in [API groups]
+   (#api-groups), under the class that owns them (or add a row for a new class).
 6. **Bump the version.**
    ```bash
    npm version patch --no-git-tag-version
